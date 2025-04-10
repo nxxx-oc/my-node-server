@@ -1,10 +1,17 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
+const allowedOrigins = [
+    'https://an-xxx.neocities.org',
+];
 
 app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
 }));
 
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
